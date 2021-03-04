@@ -3155,3 +3155,26 @@ player = [[5, 5], [7, 7], [4, 5], [7, 0], [2, 2], [2, 5], [7, 6], [1, 0], [0, 0]
 CROSSING...
 end
 
+
+Wed Mar  3 20:09:06 2021
+estimated time to complete: 1149.0379174550374 minutes
+CALCULATING FITNESS...
+
+Wed Mar  3 20:10:12 2021
+estimated time to complete: 62.597453594207764 minutes
+CALCULATING FITNESS...
+
+Wed Mar  3 20:10:40 2021
+estimated time to complete: 61.29117806752523 minutes
+CALCULATING FITNESS...
+0 calc_fitness time = 34.32338833808899
+9 9 7 7 7 7 7 6 6 5 5 5 5 5 5 5 5 4 4 4 4 4 4 4 4 4 4 4 4 3 3 3 3 3 3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 
+highest fitness = 9
+player = [[6, 4], [7, 2], [6, 7], [3, 2], [5, 0], [6, 1], [1, 6], [6, 3], [5, 4], [4, 6], [5, 3], [5, 1], [1, 7], [1, 2], [3, 4], [0, 3], [4, 2], [0, 6], [1, 1], [3, 3], [6, 6], [2, 6], [7, 5], [0, 5], [5, 6], [2, 4], [0, 1], [3, 1], [7, 4], [4, 4], [2, 1], [0, 4], [3, 7], [2, 3], [2, 7], [2, 2], [6, 2], [5, 7], [3, 5], [4, 0], [7, 3], [0, 2], [1, 5], [4, 7], [3, 6], [0, 0], [1, 0], [2, 5], [7, 6], [7, 0], [1, 4], [4, 1], [7, 7], [7, 1], [1, 3], [3, 0], [5, 5], [6, 5], [6, 0], [2, 0], [4, 3], [4, 5], [5, 2], [0, 7]]
+CROSSING...
+estimated time to complete: 62.76230017344157 minutes
+CALCULATING FITNESS...
+
+Wed Mar  3 20:14:06 2021
+estimated time to complete: 1232.9847415288289 minutes
+CALCULATING FITNESS...

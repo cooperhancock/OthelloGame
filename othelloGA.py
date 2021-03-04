@@ -2,24 +2,13 @@ import othello
 import random
 import time
 
-# GLOBAL MODIFIERS #
-
-games = 100 # number of games played to calculate fitness
-mutation_rate = 0.05 # chance that a gene will mutate
-generations = 1000 # number of generations to run
-population_size = 100 # population size of each generation
-survivors = 10 # number of players to directly move on to next generation
-
-main_log_file = 'mainGA.txt'
-debug_log_file = 'debugGA.txt'
-
-debug_mode = False
-
-healthy_chromosome = []
+healthy_chromosome = [] # for mutations and chromosome health verification
 for i in range(8):
     for j in range(8):
         healthy_chromosome.append([i,j])
 
+main_log_file='mainGA.txt'
+debug_log_file='debugGA.txt'
 
 ################
 # PLAYER CLASS #
@@ -35,8 +24,7 @@ class Player:
             self.chromosome.append(0)
     
     # crosses player with passed other player
-    def crossover(self, other):
-        global mutation_rate
+    def crossover(self, other, mutation_rate):
         child = Player()
         # inherit genes from parent 1
         for i in range(len(child.chromosome)): 
@@ -73,56 +61,55 @@ class Player:
             if child.chromosome.count(healthy_chromosome[i]) != 1:
                 healthy = False
         if not healthy:
-            return self.crossover(other) # if child is not healthy, retry crossover
+            return self.crossover(other, mutation_rate) # if child is not healthy, retry crossover
         else:
             return child
 
     # player plays n games of othello with a computer that chooses random moves
     # each game it wins increases its fitness by 1, up to a possible n
-    def calc_fitness(self):
+    def calc_fitness(self, games):
         self.fitness = 0
-        global games
-        # for i in range(games//2): # half with player playing first
-        #     log('game ' + str(i), True)
-        #     game = othello.Othello()
-        #     log(str(game), True)
-        #     canMove = 2
-        #     turn = 1
-        #     while canMove > 0:
-        #         # player's move
-        #         game.current_player = 'B'
-        #         moves, flips = game.valid_moves()
-        #         log(str(moves), True)
-        #         if len(moves) != 0:
-        #             try:
-        #                 move = moves.index(self.advanced_chooser(moves))
-        #             except:
-        #                 self.fitness = 0
-        #                 log('!lethal chromosome! ' + str(self))
-        #                 return
-        #             game.move(moves, flips, move)
-        #         else:
-        #             canMove -= 1
-        #         log(str(turn) + game.current_player + '\n' + str(game), True)
-        #         # computer's (random) move
-        #         game.current_player = 'W'
-        #         moves, flips = game.valid_moves()
-        #         log(str(moves), True)
-        #         if len(moves) != 0:
-        #             move = moves.index(game.computer_chooser(moves))
-        #             game.move(moves, flips, move)
-        #         else:
-        #             canMove -= 1
-        #         log(str(turn) + game.current_player + '\n' + str(game), True)
-        #         turn += 1
-        #     white = 0
-        #     black = 0
-        #     for list in game.board: 
-        #         white += list.count('W')
-        #         black += list.count('B')
-        #     if black>white:
-        #         self.fitness += 1
-        #         log('!won!', True)
+        for i in range(games//2): # half with player playing first
+            log('game ' + str(i), True)
+            game = othello.Othello()
+            log(str(game), True)
+            canMove = 2
+            turn = 1
+            while canMove > 0:
+                # player's move
+                game.current_player = 'B'
+                moves, flips = game.valid_moves()
+                log(str(moves), True)
+                if len(moves) != 0:
+                    try:
+                        move = moves.index(self.advanced_chooser(moves))
+                    except:
+                        self.fitness = 0
+                        log('!lethal chromosome! ' + str(self))
+                        return
+                    game.move(moves, flips, move)
+                else:
+                    canMove -= 1
+                log(str(turn) + game.current_player + '\n' + str(game), True)
+                # computer's (random) move
+                game.current_player = 'W'
+                moves, flips = game.valid_moves()
+                log(str(moves), True)
+                if len(moves) != 0:
+                    move = moves.index(game.computer_chooser(moves))
+                    game.move(moves, flips, move)
+                else:
+                    canMove -= 1
+                log(str(turn) + game.current_player + '\n' + str(game), True)
+                turn += 1
+            white = 0
+            black = 0
+            for list in game.board: 
+                white += list.count('W')
+                black += list.count('B')
+            if black>white:
+                self.fitness += 1
+                log('!won!', True)
         for i in range(games): # for now -- only run when player is W bc that's how it will be in the game
             log('game ' + str(i), True)
             game = othello.Othello()
@@ -201,9 +188,9 @@ def random_population(size):
 
 # logs data to log files (goes to debug file as well if True)
 def log(string, mode=False):
-    global debug_mode
+    global main_log_file,debug_log_file
     str(string)
-    if debug_mode:
+    if mode:
         with open(debug_log_file, 'a') as d:
             d.write(string + '\n')
     if not mode:
@@ -211,57 +198,84 @@ def log(string, mode=False):
             m.write(string + '\n')
         print(string)
 
-########
-# MAIN #
-########
+def runGA(games=100, mutation_rate=0.05, generations=100, population_size=100, survivors=10, main_log='mainGA.txt', debug_log='debugGA.txt', debug_mode=False, white=True, black=True):
 
-log('\n' + str(time.asctime(time.localtime(time.time())))) # define section of log files for instance of program
-population = random_population(population_size) # create population of players
+    # GLOBAL MODIFIERS #
 
-# main simulation of each generation
-for gen in range(generations):
+    global main_log_file
+    global debug_log_file
+    main_log_file = main_log
+    debug_log_file = debug_log
 
-    # calculate fitness of population
+    #games = 10 # number of games played to calculate fitness
+    #mutation_rate = 0.05 # chance that a gene will mutate
+    #generations = 1000 # number of generations to run
+    #population_size = 50 # population size of each generation
+    #survivors = 10 # number of players to directly move on to next generation
+
+    ########
+    # MAIN #
+    ########
+
+    log('\n' + str(time.asctime(time.localtime(time.time())))) # define section of log files for instance of program
+    population = random_population(population_size) # create population of players
+
+    # calculate run time
     timeStart = time.time()
-    log('CALCULATING FITNESS...')
-    for i in range(population_size):
-        log('calulating fitness of ' + str(i), True)
-        print(i)
-        population[i].calc_fitness()
-    print()
-    log(str(gen) + ' calc_fitness time = ' + str(time.time()-timeStart))
+    print('calculating run time...')
+    population[0].calc_fitness(games)
+    log('estimated time to complete: ' + str((time.time()-timeStart)*population_size*generations/60) + ' minutes') 
+    x = input('Press Enter to continue or q to quit')
+    if x == 'q':
+        return
 
-    # sorts population by fitness
-    population.sort(key=lambda x: x.fitness, reverse=True)
-    highestFitness = population[0].fitness
-    s = ''
-    for i in range(population_size):
-        s += str(population[i].fitness)
-        s += ' '
-    log(s)
-    log('highest fitness = ' + str(highestFitness))
-    log('player = ' + str(population[0]))
+    # main simulation of each generation
+    for gen in range(generations):
 
-    # create new population
-    newPopulation = []
+        # calculate fitness of population
+        timeStart = time.time()
+        log('CALCULATING FITNESS...')
+        for i in range(population_size):
+            log('calulating fitness of ' + str(i), True)
+            print(i)
+            population[i].calc_fitness(games)
+        print()
+        log(str(gen) + ' calc_fitness time = ' + str(time.time()-timeStart))
 
-    # move best players to next generation
-    for i in range(survivors):
-        log('adding ' + str(i), True)
-        newPopulation.append(population[i])
+        # sorts population by fitness
+        population.sort(key=lambda x: x.fitness, reverse=True)
+        highestFitness = population[0].fitness
+        s = ''
+        for i in range(population_size):
+            s += str(population[i].fitness)
+            s += ' '
+        log(s)
+        log('highest fitness = ' + str(highestFitness))
+        log('player = ' + str(population[0]))
 
-    # cross best 50% of population
-    log('CROSSING...')
-    for i in range(population_size-survivors):
-        log('crossing ' + str(i), True)
-        rand = random.randint(0,population_size/2)
-        parent1 = population[rand]
-        rand = random.randint(0,population_size/2)
-        parent2 = population[rand]
-        child = parent1.crossover(parent2)
-        newPopulation.append(child)
-    
-    # set population to new population
-    population = newPopulation
+        # create new population
+        newPopulation = []
 
-log('end\n')
+        # move best players to next generation
+        for i in range(survivors):
+            log('adding ' + str(i), True)
+            newPopulation.append(population[i])
+
+        # cross best 50% of population
+        log('CROSSING...')
+        for i in range(population_size-survivors):
+            log('crossing ' + str(i), True)
+            rand = random.randint(0,population_size/2)
+            parent1 = population[rand]
+            rand = random.randint(0,population_size/2)
+            parent2 = population[rand]
+            child = parent1.crossover(parent2, mutation_rate)
+            newPopulation.append(child)
+        
+        # set population to new population
+        population = newPopulation
+
+    log('end\n')
+
+if __name__ == "__main__":
+    runGA()
