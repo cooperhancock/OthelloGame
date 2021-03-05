@@ -6,6 +6,11 @@ import os
 import time
 import sys
 import random
+try:
+    import choosers
+except:
+    input('Fatal Error: choosers.py not found. Press Enter to exit.')
+    exit()
 
 # coordinates [x (row), y (col)]
 
@@ -22,17 +27,11 @@ turn = 1 # turn tracker for log file
 # command line args
 if 'debug' in sys.argv:
     debug = True
-if 'expert' in sys.argv:
-    howToPlay = False
 if 'basic-render' in sys.argv:
     doClear = False
 if 'log' in sys.argv:
     log = True
     f = open("othellologs.txt", 'w')
-
-# player chromosome from GA
-playerWhite = [[5, 5], [7, 7], [4, 5], [7, 0], [2, 2], [2, 5], [7, 6], [1, 0], [0, 0], [1, 1], [2, 7], [6, 0], [0, 2], [6, 6], [3, 3], [1, 2], [5, 0], [0, 4], [4, 0], [6, 7], [5, 6], [6, 5], [0, 1], [0, 7], [5, 4], [4, 4], [2, 0], [0, 3], [6, 3], [1, 7], [7, 5], [7, 1], [3, 0], [3, 1], [5, 7], [3, 5], [7, 3], [7, 2], [4, 7], [4, 6], [0, 6], [1, 3], [0, 5], [7, 4], [4, 2], [1, 6], [3, 7], [2, 6], [6, 1], [3, 4], [5, 3], [4, 1], [5, 1], [6, 4], [4, 3], [1, 4], [1, 5], [2, 4], [5, 2], [3, 2], [2, 3], [3, 6], [6, 2], [2, 1]]
-playerBlack = [[5, 5], [7, 7], [4, 5], [7, 0], [2, 2], [2, 5], [7, 6], [1, 0], [0, 0], [1, 1], [2, 7], [6, 0], [0, 2], [6, 6], [3, 3], [1, 2], [5, 0], [0, 4], [4, 0], [6, 7], [5, 6], [6, 5], [0, 1], [0, 7], [5, 4], [4, 4], [2, 0], [0, 3], [6, 3], [1, 7], [7, 5], [7, 1], [3, 0], [3, 1], [5, 7], [3, 5], [7, 3], [7, 2], [4, 7], [4, 6], [0, 6], [1, 3], [0, 5], [7, 4], [4, 2], [1, 6], [3, 7], [2, 6], [6, 1], [3, 4], [5, 3], [4, 1], [5, 1], [6, 4], [4, 3], [1, 4], [1, 5], [2, 4], [5, 2], [3, 2], [2, 3], [3, 6], [6, 2], [2, 1]]
 
 #################
 # OTHELLO CLASS #
@@ -119,32 +118,14 @@ class Othello():
                                         break
                                     toFlip.append([i+row_step*step, j+col_step*step])
         return validMoves, flipTiles
-
-    # random move
-    def computer_chooser(self, valid_moves): 
-        return valid_moves[random.randint(0,len(valid_moves)-1)] # coordinate
-
-    # first available move
-    def first_move(self, valid_moves):
-        return valid_moves[0]
-
-    # chooser from GA
-    def advanced_chooser(self, valid_moves):
-        global playerWhite
-        if self.current_player == 'W':
-            for i in playerWhite:
-                if i in valid_moves:
-                    return i
-        elif self.current_player == 'B':
-            for i in playerBlack:
-                if i in valid_moves:
-                    return i
     
     # display board with valid moves
     def render(self, valid_moves):
         i = 1
+        items=['W','B','*'] # items on board
         for list in valid_moves:
-            self.board[list[0]][list[1]] = str(i)
+            if self.board[list[0]][list[1]] in items:
+                self.board[list[0]][list[1]] = str(i)
             i += 1
         s = ''
         for i in range(8):
@@ -222,63 +203,14 @@ def _debug():
     print(type(1))
     print(isinstance(1, int))
 
-    input('enter to test:')
-    # double computer test
-    global turn, log
-    game = Othello()
-    canMove = 2
-    move = ''
-    while canMove > 0:
-        # Black (player's) turn
-        game.current_player = 'B'
-        if log:
-            f.write(str(turn) + game.current_player + '\n')
-        moves, flips = game.valid_moves()
-        if len(moves) != 0:
-            move = moves.index(game.computer_chooser(moves))
-            if log:
-                f.write('move: ' + str(move) + ' moves: ' + str(moves) + ' flips: ' + str(flips) + '\n')
-            game.move(moves, flips, move)
-            print(game)
-        else:
-            canMove -= 1
-        # White (computer's) turn
-        game.current_player = 'W'
-        if log:
-            f.write(str(turn) + game.current_player + '\n')
-        moves, flips = game.valid_moves()
-        if len(moves) != 0:
-            move = moves.index(game.advanced_chooser(moves))
-            if log:
-                f.write('move: ' + str(move) + ' moves: ' + str(moves) + ' flips: ' + str(flips) + '\n')
-            game.move(moves, flips, move)
-            print(game)
-        else:
-            canMove -= 1
-        move = ''
-        turn += 1
+    input('enter')
 
-    # Calculate Winner
-    white = 0
-    black = 0
-    for list in game.board: 
-        white += list.count('W')
-        black += list.count('B')
-    print(game)
-    if white>black:
-        print("White wins!")
-    elif black>white:
-        print("Black wins!")
-    else:
-        print("It's a tie!")
-    if log:
-        f.write('white: ' + str(white) + ' black: ' + str(black))
-    x = input('press enter to exit debug ')
-    if x == 'q':
-        f.close()
-        return
+########
+# MAIN #
+########
 
 # initialization/bootup of game
+# returns 1 if need to change to basic render
 def init():
     # clear() test
     try:
@@ -288,6 +220,7 @@ def init():
         print('This environment cannot run the current configuration')
         print('Changing to basic rendering mode...')
         input('Press Enter to start program')
+        return 1
 
     if debug:
         _debug()
@@ -295,77 +228,106 @@ def init():
     # Game Initialization
     print('Welcome to Othello')
 
-##############
-# MAIN GAMES #
-##############
 
-# play main game human v. computer
-def main():
+# play main game
+# players can be human or any chooser
+# mode param is list of modes:
+# quiet to disable printing out board
+def main(player1='human', player2='corner', mode=''):
 
-    global turn, debug, howToPlay, log, doClear
+    # verify players
+    if player1 not in choosers.chooser_list:
+        print('Player Error: invalid player, setting to default...')
+        time.sleep(2)
+        player1='human'
+    if player2 not in choosers.chooser_list:
+        print('Player Error: invalid player, setting to default...')
+        time.sleep(2)
+        player2='corner'
 
+    # use global config variables
+    global turn, debug, log, doClear
     if log:
-        f.write('Running Main Game\n')
+        f.write('Running Game config: ' + player1 +' '+ player2 +' '+ mode + '\n')
 
+    # game setup
     game = Othello()
     canMove = 2
     move = ''
-    print(game)
-    print('Press Enter to Begin')
-    input
-    clear(doClear)
+    if not mode=='quiet':
+        print(game)
+        print('Press Enter to Begin')
+        input
+        clear(doClear)
 
     # Main Engine
 
     while canMove > 0:
-        # Black (player's) turn
-        game.current_player = 'B'
-        if log:
-            f.write(str(turn) + game.current_player + '\n')
-        print(game)
-        moves, flips = game.valid_moves()
-        if len(moves) != 0:
-            game.render(moves)
-            while not isinstance(move,int):
-                move = input('Enter move number: ')
-                if move == 'q':
-                    print('quitting game')
-                    if log:
-                        f.close()
-                    time.sleep(1)
-                    return 0,0
-                try:
-                    move = int(move)
-                except:
-                    print('invalid move ', end='')
-                    continue
-                if move <= 0 or move > len(moves):
-                    print('invalid move ', end='')
-                    move = ''
-                    continue
+        canMove = 2
+        if log: f.write('next loop\n')
+        for i in range(2): # each turn first player1 ('B') then player2 ('W')
+            players = [player1,player2]
+            colors = ['B','W']
+            game.current_player = colors[i]
             if log:
-                f.write('move: ' + str(move) + ' moves: ' + str(moves) + ' flips: ' + str(flips) + '\n')
-            game.move(moves, flips, move-1)
-            print(game)
-        else:
-            canMove -= 1
+                f.write(str(turn) + game.current_player + ' i=' + str(i) + '\n')
+            
+            # print board
+            if not mode=='quiet': print(game) 
 
-        # White (computer's) turn
-        game.current_player = 'W'
-        if log:
-            f.write(str(turn) + game.current_player + '\n')
-        moves, flips = game.valid_moves()
-        if len(moves) != 0:
-            move = moves.index(game.advanced_chooser(moves))
-            if log:
-                f.write('move: ' + str(move) + ' moves: ' + str(moves) + ' flips: ' + str(flips) + '\n')
-            game.move(moves, flips, move)
-            print('*computer is making a move*')
-            time.sleep(1)
-        else:
-            canMove -= 1
-        move = ''
-        clear(doClear)
+            # get valid moves for this player's turn
+            moves, flips = game.valid_moves()
+
+            # execute move if there are moves to make
+            if len(moves) != 0:
+                # human player
+                if players[i]=='human':
+                    if log: f.write('human\n')
+                    game.render(moves)
+                    while not isinstance(move,int):
+                        print('Player',str(i+1)+"'s turn! ("+colors[i]+')')
+                        move = input('Enter move number: ')
+                        if move == 'q':
+                            print('quitting game')
+                            if log:
+                                f.close()
+                            time.sleep(1)
+                            return 0,0
+                        try:
+                            move = int(move)
+                        except:
+                            print('invalid move ', end='')
+                            continue
+                        if move <= 0 or move > len(moves):
+                            print('invalid move ', end='')
+                            move = ''
+                            continue
+                    move -= 1 # zero-index move
+                    game.move(moves, flips, move)
+                    clear(doClear)
+                # computer player
+                else:
+                    if log: f.write('computer\n')
+                    if players[i]=='random':
+                        move = moves.index(choosers.computer_chooser(moves))
+                    elif players[i]=='corner':
+                        move = moves.index(choosers.corner_chooser(moves))
+                    elif players[i]=='first':
+                        move = moves.index(choosers.first_move(moves))
+                    elif players[i]=='advanced':
+                        move = moves.index(choosers.advanced_chooser(game.current_player, moves))
+                    game.move(moves, flips, move)
+                    if not mode=='quiet':
+                        print('*computer is making a move*')
+                        time.sleep(1)
+                        clear(doClear)
+                # log
+                if log:
+                    f.write('move: ' + str(move) + ' moves: ' + str(moves) + ' flips: ' + str(flips) + '\n')
+            # if no moves to make
+            else:
+                canMove -= 1
+            move = ''
         turn += 1
 
     # Calculate Winner
@@ -375,209 +337,17 @@ def main():
         white += list.count('W')
         black += list.count('B')
 
-    print(game)
-    if white>black:
-        print("White wins!")
-    elif black>white:
-        print("Black wins!")
-    else:
-        print("It's a tie!")
+    if not mode=='quiet':
+        print(game)
+        if white>black:
+            print("White wins!")
+        elif black>white:
+            print("Black wins!")
+        else:
+            print("It's a tie!")
 
     if log:
-        f.write('white: ' + str(white) + ' black: ' + str(black))
-        f.close()
+        f.write('black: ' + str(black) + ' white: ' + str(white))
 
     return black, white
 
-# same as main() except computer is B
-def mainTwo():
-
-    global turn, debug, howToPlay, log, doClear
-
-    if log:
-        f.write('Running MainTwo Game\n')
-
-    game = Othello()
-    canMove = 2
-    move = ''
-    print(game)
-    print('Press Enter to Begin')
-    input
-    clear(doClear)
-
-    # Main Engine
-
-    while canMove > 0:
-        # White (computer's) turn
-        game.current_player = 'B'
-        if log:
-            f.write(str(turn) + game.current_player + '\n')
-        moves, flips = game.valid_moves()
-        if len(moves) != 0:
-            move = moves.index(game.advanced_chooser(moves))
-            if log:
-                f.write('move: ' + str(move) + ' moves: ' + str(moves) + ' flips: ' + str(flips) + '\n')
-            game.move(moves, flips, move)
-            print('*computer is making a move*')
-            time.sleep(1)
-        else:
-            canMove -= 1
-        move = ''
-        clear(doClear)
-        turn += 1
-        # Black (player's) turn
-        game.current_player = 'W'
-        if log:
-            f.write(str(turn) + game.current_player + '\n')
-        print(game)
-        moves, flips = game.valid_moves()
-        if len(moves) != 0:
-            game.render(moves)
-            while not isinstance(move,int):
-                move = input('Enter move number: ')
-                if move == 'q':
-                    print('quitting game')
-                    if log:
-                        f.close()
-                    time.sleep(1)
-                    return 0,0
-                try:
-                    move = int(move)
-                except:
-                    print('invalid move ', end='')
-                    continue
-                if move <= 0 or move > len(moves):
-                    print('invalid move ', end='')
-                    move = ''
-                    continue
-            if log:
-                f.write('move: ' + str(move) + ' moves: ' + str(moves) + ' flips: ' + str(flips) + '\n')
-            game.move(moves, flips, move-1)
-            print(game)
-        else:
-            canMove -= 1
-    # Calculate Winner
-    white = 0
-    black = 0
-    for list in game.board: 
-        white += list.count('W')
-        black += list.count('B')
-
-    print(game)
-    if white>black:
-        print("White wins!")
-    elif black>white:
-        print("Black wins!")
-    else:
-        print("It's a tie!")
-
-    if log:
-        f.write('white: ' + str(white) + ' black: ' + str(black))
-        f.close()
-
-    return black, white
-
-def mainThree():
-
-    global turn, debug, howToPlay, log, doClear
-
-    if log:
-        f.write('Running MainThree Game\n')
-
-    game = Othello()
-    canMove = 2
-    move = ''
-    print(game)
-    print('Press Enter to Begin')
-    input
-    clear(doClear)
-
-    # Main Engine
-
-    while canMove > 0:
-        # Black (player's) turn
-        print("Black's turn:")
-        game.current_player = 'B'
-        if log:
-            f.write(str(turn) + game.current_player + '\n')
-        print(game)
-        moves, flips = game.valid_moves()
-        if len(moves) != 0:
-            game.render(moves)
-            while not isinstance(move,int):
-                move = input('Enter move number: ')
-                if move == 'q':
-                    print('quitting game')
-                    if log:
-                        f.close()
-                    time.sleep(1)
-                    return 0,0
-                try:
-                    move = int(move)
-                except:
-                    print('invalid move ', end='')
-                    continue
-                if move <= 0 or move > len(moves):
-                    print('invalid move ', end='')
-                    move = ''
-                    continue
-            if log:
-                f.write('move: ' + str(move) + ' moves: ' + str(moves) + ' flips: ' + str(flips) + '\n')
-            game.move(moves, flips, move-1)
-            print(game)
-        else:
-            canMove -= 1
-
-        # White (player's) turn
-        print("White's turn:")
-        game.current_player = 'W'
-        if log:
-            f.write(str(turn) + game.current_player + '\n')
-        print(game)
-        moves, flips = game.valid_moves()
-        if len(moves) != 0:
-            game.render(moves)
-            while not isinstance(move,int):
-                move = input('Enter move number: ')
-                if move == 'q':
-                    print('quitting game')
-                    if log:
-                        f.close()
-                    time.sleep(1)
-                    return 0,0
-                try:
-                    move = int(move)
-                except:
-                    print('invalid move ', end='')
-                    continue
-                if move <= 0 or move > len(moves):
-                    print('invalid move ', end='')
-                    move = ''
-                    continue
-            if log:
-                f.write('move: ' + str(move) + ' moves: ' + str(moves) + ' flips: ' + str(flips) + '\n')
-            game.move(moves, flips, move-1)
-            print(game)
-        else:
-            canMove -= 1
-
-    # Calculate Winner
-    white = 0
-    black = 0
-    for list in game.board: 
-        white += list.count('W')
-        black += list.count('B')
-
-    print(game)
-    if white>black:
-        print("White wins!")
-    elif black>white:
-        print("Black wins!")
-    else:
-        print("It's a tie!")
-
-    if log:
-        f.write('white: ' + str(white) + ' black: ' + str(black))
-        f.close()
-
-    return black, white

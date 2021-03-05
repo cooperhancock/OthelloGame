@@ -68,3 +68,17 @@ player playing B (player 2)
 3
 player playing W (player 1)
 497
+
+Thu Mar  4 22:34:28 2021
+corner
+random
+
+Thu Mar  4 22:35:05 2021
+corner
+random
+player 1: 804 player 2: 177
+
+Thu Mar  4 22:36:07 2021
+random
+corner
+player 1: 58 player 2: 923

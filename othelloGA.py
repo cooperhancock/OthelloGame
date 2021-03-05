@@ -1,3 +1,7 @@
+# OthelloGame Chooser Genetic Algorithm
+# Cooper Hancock
+# 2021
+
 import othello
 import random
 import time
