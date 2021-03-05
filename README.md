@@ -6,7 +6,7 @@
 
 ## Running:
 
-**Run othello_driver.py**
+**Run OthelloGame.py**
 
 ## Main File Structure
 
