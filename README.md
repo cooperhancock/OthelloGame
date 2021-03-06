@@ -2,7 +2,10 @@
  
 **Welcome to the OthelloGame README**
 
-*v1.0*
+*v1.1*
+*Changelog*
+* *Added tournament mode with support for single elimination tournament*
+* *Added command line arg support for booting with initial command*
 
 ## Running:
 
@@ -39,6 +42,8 @@ The program can be run with the following command line args for added functional
 * basic-render
     * disables clear() function, which may not work on Unix machines
     * default run configuration will try clear() and notify the user if the function will not work on their machine
+* mode \[*mode*\]
+    * boot directly into mode indicated after 'mode'
 
 ## OthelloGame Program Structure:
 
@@ -62,7 +67,8 @@ The program can be run with the following command line args for added functional
     * q: Quits program
     * a: Displays advaced options:
         * 5: Run PlayTest with given choosers
-        * 6: Run genetic algorithm **_*not yet supported_**
+        * 6: Run Tournament
+        * 7: Run genetic algorithm **_*not yet supported_**
 
 ## Othello Program Structure:
 
@@ -131,6 +137,12 @@ The program can be run with the following command line args for added functional
     * takes in 2 choosers and number of games to play
     * plays that number of games in quiet mode to run as fast as possible
     * displays results and saves them to a log file
+* Single Elimination Tournament
+    * takes in list of players
+    * recursively executes a single elimination tournament bracket for players
+        * each 'game' in tournament is a run test of 1000 games
+        * *note that if there is a tie, the second player is declared winner*
+    * returns winner of tournament
 
 *Code and README by Cooper Hancock*
-*3/4/2021*
+*3/5/2021*

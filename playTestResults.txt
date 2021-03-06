@@ -82,3 +82,68 @@ Thu Mar  4 22:36:07 2021
 random
 corner
 player 1: 58 player 2: 923
+
+players: ['corner', 'random', 'first']
+
+Fri Mar  5 19:09:32 2021
+corner
+random
+
+player 1: 800 player 2: 173
+players: ['corner', 'first']
+
+Fri Mar  5 19:09:40 2021
+corner
+first
+
+player 1: 0 player 2: 0
+players: ['first']
+
+players: ['corner', 'random', 'first']
+
+Fri Mar  5 19:22:36 2021
+corner
+random
+player 1: 816 player 2: 162
+players: ['corner', 'first']
+
+Fri Mar  5 19:22:44 2021
+corner
+first
+player 1: 0 player 2: 0
+players: ['first']
+
+New Tournament
+Fri Mar  5 19:28:43 2021
+players: ['corner', 'random', 'first']
+
+Fri Mar  5 19:28:43 2021
+corner
+random
+player 1: 815 player 2: 157
+players: ['corner', 'first']
+
+Fri Mar  5 19:28:51 2021
+corner
+first
+player 1: 0 player 2: 0
+players: ['first']
+end condition
+
+New Tournament
+Fri Mar  5 19:30:17 2021
+players: ['corner', 'random', 'first']
+
+Fri Mar  5 19:30:17 2021
+corner
+random
+player 1: 812 player 2: 156
+players: ['corner', 'first']
+
+Fri Mar  5 19:30:24 2021
+corner
+first
+player 1: 0 player 2: 0
+players: ['first']
+end condition
+winner: first
