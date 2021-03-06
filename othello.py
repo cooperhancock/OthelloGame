@@ -233,7 +233,7 @@ def init():
 # players can be human or any chooser
 # mode param is list of modes:
 # quiet to disable printing out board
-def main(player1='human', player2='corner', mode=''):
+def main(player1='human', player2='corner', mode='', GAplayer1=None, GAplayer2=None):
 
     # verify players
     if player1 not in choosers.chooser_list:
@@ -244,6 +244,17 @@ def main(player1='human', player2='corner', mode=''):
         print('Player Error: invalid player, setting to default...')
         time.sleep(2)
         player2='corner'
+
+    if player1=='advanced1':
+        import othelloGA
+        if not isinstance(GAplayer1, othelloGA.Player):
+            input('GAplayer1 not of type Player, press Enter to exit')
+            exit()
+    if player1=='advanced2':
+        import othelloGA
+        if not isinstance(GAplayer2, othelloGA.Player):
+            input('GAplayer2 not of type Player, press Enter to exit')
+            exit()
 
     # use global config variables
     global turn, debug, log, doClear
@@ -314,8 +325,10 @@ def main(player1='human', player2='corner', mode=''):
                         move = moves.index(choosers.corner_chooser(moves))
                     elif players[i]=='first':
                         move = moves.index(choosers.first_move(moves))
-                    elif players[i]=='advanced':
-                        move = moves.index(choosers.advanced_chooser(game.current_player, moves))
+                    elif players[i]=='advanced1':
+                        move = moves.index(choosers.advanced_chooser(game.current_player, moves, GAplayer1))
+                    elif players[i]=='advanced2':
+                        move = moves.index(choosers.advanced_chooser(game.current_player, moves, GAplayer2))
                     game.move(moves, flips, move)
                     if not mode=='quiet':
                         print('*computer is making a move*')

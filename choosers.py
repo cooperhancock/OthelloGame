@@ -6,7 +6,7 @@ import random
 import math
 
 # list of active choosers
-chooser_list = ['corner','random','first','advanced','human']
+chooser_list = ['corner','random','first','advanced1','advanced2','human']
 
 # advanced chooser Genetic Algorithm chromosome
 player = []
@@ -27,9 +27,8 @@ def first_move(valid_moves):
     return valid_moves[0]
 
 # chooser from GA
-def advanced_chooser(current_player, valid_moves):
-    global player
-    for i in player[current_player]:
+def advanced_chooser(current_player, valid_moves, ga_player):
+    for i in ga_player.chromosome[current_player]:
         if i in valid_moves:
             return i
 

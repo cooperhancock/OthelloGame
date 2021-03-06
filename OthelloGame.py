@@ -38,9 +38,8 @@ def GA_wizard():
     print('Warning! Input paramater values carefully')
     print('Different values will lead to astronomically different run times')
     print('Read OthelloGame README for more information')
-    print('games, mutation rate, generations, pop size, survivors')
+    print('mutation rate, generations, pop size, survivors')
     try:
-        games = int(input())
         rate = float(input())
         gens = int(input())
         size = int(input())
@@ -50,7 +49,7 @@ def GA_wizard():
         time.sleep(4)
         return
     try:
-        othelloGA.runGA(games, rate, gens, size, survivors)
+        othelloGA.runGA(rate, gens, size, survivors)
     except:
         print('Fatal Error: Could not execute genetic algorithm')
         print('Exiting...')
@@ -171,6 +170,15 @@ while True:
             continue
         GA_wizard()
         othello.clear(doClear)
+    # direct boot into GA
+    elif mode == '8':
+        try:
+            import othelloGA
+        except:
+            print('Fatal Error: othelloGA.py not found. Exiting...')
+            time.sleep(4)
+            continue
+        othelloGA.runGA()
     else:
         print('invalid command')
     if othello.log: 

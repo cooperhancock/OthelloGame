@@ -2,10 +2,10 @@
  
 **Welcome to the OthelloGame README**
 
-*v1.1*
+*v1.2*
 *Changelog*
-* *Added tournament mode with support for single elimination tournament*
-* *Added command line arg support for booting with initial command*
+* *Updated genetic algorithm*
+* *To try GA, run 'OthelloGame.py mode 8'*
 
 ## Running:
 
@@ -144,5 +144,44 @@ The program can be run with the following command line args for added functional
         * *note that if there is a tie, the second player is declared winner*
     * returns winner of tournament
 
+## OthelloGA Program
+
+The Othello Genetic Algorithm is an first attempt at solving Othello, or at least produce a Chooser Algorithm that performs well against human developed choosers. A Genetic Algorithm is a heuristic algorithm that models genetics and evolution to opproach a solution to a problem. With each 'generation' the algorithm produces better and better solutions. In theory, with sound design and an infinite number of generations, one could arrive at a perfect and optimal solution. Read [the wikipedia article](https://en.wikipedia.org/wiki/Genetic_algorithm) for more information.
+
+Genetic Algorithms contain a few main components:
+* A Population of Individuals, each of which represent a single solution. Individuals have two properties: a fitness value, and a chromosome
+    * The Chromosome can be represented by any data structure that is deemed fit fo the particular problem. The Chromosome encodes all information necessary to describe a solution.
+* A way to determine Fitness of Individuals. This should be an objective measure of the chromosome as a solution to the problem.
+* Crossover and Mutation
+    * Crossover involves combining parts of chromosomes from the fittest Individuals of the population to create a new generation of Individuals. This serves as a way of shuffling/shifting the chromosome to test solutions that are based on solutions that performed comparatively well.
+    * Mutation involves randomly changing parts of the chromosome to increase diversity of new solutions.
+* Each Iteration/Generation of the algorithm tests a new Population of Individuals and this process is repeated until the solution is sufficiently optimized.
+
+### Othello Genetic Algorithm Components
+
+* Player class represents Individuals of the population
+    * Players are initialized with an empty chromosome and a fitness of 0
+        * Chromosome is represented as a dictionary of 2 items, one for playing as Black, one for playing as White
+        * Each item of the dictionary is a 64 item list, each item in the list being a coordinate representing a move one can make on the 8x8 board
+        * The Chromosome is to be interpreted as a solution by playing the first valid move in the list of the color being played
+    * Crossover: child inherits the list for playing Black from one parent and the list for playing White from the other parent
+    * Mutation: starting at both ends of each list moving inward, at any 2 points, there is a chance the coordinates will be swapped
+* create chromosome
+    * creates randomly populated 64 coordinate list
+* random population
+    * creates a population of Players each with random chromosomes
+* log
+    * logs data to a log file for reference
+* calc fitness
+    * each Player in the population plays with exactly one other player exactly once, minimizing the time spent for executing games for all Players
+* run GA
+    * runs main algorithm
+    * creates initial random population
+    * determines fitness
+    * sorts individuals by fitness
+    * top 10% of population move directly to next generation
+    * selects top 50% of population for crossover
+    * those Players cross to create new population for next generation
+
 *Code and README by Cooper Hancock*
-*3/5/2021*
+*3/6/2021*
