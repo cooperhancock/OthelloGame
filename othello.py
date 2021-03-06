@@ -255,6 +255,10 @@ def main(player1='human', player2='corner', mode='', GAplayer1=None, GAplayer2=N
         if not isinstance(GAplayer2, othelloGA.Player):
             input('GAplayer2 not of type Player, press Enter to exit')
             exit()
+    if player1=='ga' or player2=='ga':
+        import othelloGA
+        GAplayer = othelloGA.Player()
+        GAplayer.chromosome = choosers.GAchromosome
 
     # use global config variables
     global turn, debug, log, doClear
@@ -329,6 +333,8 @@ def main(player1='human', player2='corner', mode='', GAplayer1=None, GAplayer2=N
                         move = moves.index(choosers.advanced_chooser(game.current_player, moves, GAplayer1))
                     elif players[i]=='advanced2':
                         move = moves.index(choosers.advanced_chooser(game.current_player, moves, GAplayer2))
+                    elif players[i]=='ga':
+                        move = moves.index(choosers.advanced_chooser(game.current_player, moves, GAplayer))
                     game.move(moves, flips, move)
                     if not mode=='quiet':
                         print('*computer is making a move*')

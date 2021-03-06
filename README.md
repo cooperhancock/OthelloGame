@@ -2,9 +2,9 @@
  
 **Welcome to the OthelloGame README**
 
-*v1.2*
+*v1.2.1*
 *Changelog*
-* *Updated genetic algorithm*
+* *Fixed calc fitness function*
 * *To try GA, run 'OthelloGame.py mode 8'*
 
 ## Running:

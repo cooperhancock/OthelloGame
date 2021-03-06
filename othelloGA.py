@@ -96,6 +96,8 @@ def log(string, mode=False):
 # each game it wins increases its fitness by 1, up to a possible population_size-1
 # takes list of players
 def calc_fitness(population,mode=''):
+    for i in population: # reset fitness
+        i.fitness = 0
     n = len(population)
     progress = 0
     printed = 0
